@@ -43,4 +43,19 @@ contract TokenMarketPlace is Ownable {
         adjustTokenPriceBasedOnDemand();
         uint amountToPay = (_amountOfToken * tokenPrice) / 1e18;
     }
+
+    function buyGLDToken(uint256 _amountOfToken) public payable {
+        require(_amountOfToken > 0, "Invalid Token amount");
+
+        uint requiredTokenPrice = calculateTokenPrice(_amountOfToken);
+
+        require(requiredTokenPrice == msg.value, "Incorrect token price");
+
+        // Transfer token to the buyer address
+        gldToken.safeTransfer(msg.sender, _amountOfToken);
+
+        buyerCount += 1;
+
+        emit TokenBought(msg.sender, _amountOfToken, requiredTokenPrice);
+    }
 }
