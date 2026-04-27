@@ -18,4 +18,23 @@ contract TokenMarketPlace is Ownable {
     constructor(address _gldToken) Ownable(msg.sender) {
         gldToken = IERC20(_gldToken);
     }
+
+    // Updated logic for token price calculation with safeguards
+    function adjustTokenPriceBasedOnDemand() public {
+        uint marketDemandRatio = (buyerCount * 1e10) / sellerCount;
+
+        uint smoothingFactor = 1e18;
+
+        uint adjustedRatio = (marketDemandRatio + smoothingFactor) / 2;
+
+        uint newTokenPrice = (tokenPrice * adjustedRatio) / 1e18;
+
+        uint minimumPrice = 2e16;
+
+        if (newTokenPrice < minimumPrice) {
+            tokenPrice = minimumPrice;
+        } else {
+            tokenPrice = newTokenPrice;
+        }
+    }
 }
