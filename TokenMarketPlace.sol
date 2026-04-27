@@ -9,4 +9,7 @@ contract TokenMarketPlace is Ownable {
     using SafeERC20 for IERC20;
 
     uint256 public tokenPrice = 2e16 wei; // 0.02 ether per GLD token
+
+    uint256 public sellerCount = 1;
+    uint256 public buyerCount = 1;
 }
