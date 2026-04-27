@@ -37,4 +37,10 @@ contract TokenMarketPlace is Ownable {
             tokenPrice = newTokenPrice;
         }
     }
+
+    function calculateTokenPrice(uint _amountOfToken) public {
+        require(_amountOfToken > 0, "Amount of token should be greater than 0");
+        adjustTokenPriceBasedOnDemand();
+        uint amountToPay = (_amountOfToken * tokenPrice) / 1e18;
+    }
 }
