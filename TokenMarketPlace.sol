@@ -25,6 +25,7 @@ contract TokenMarketPlace is Ownable {
         uint256 amountOfToken,
         uint256 totalEarned
     );
+    event TokensWithdrawn(address indexed owner, uint256 amount);
 
     constructor(address _gldToken) Ownable(msg.sender) {
         gldToken = IERC20(_gldToken);
@@ -87,5 +88,13 @@ contract TokenMarketPlace is Ownable {
         sellerCount += 1;
 
         emit TokenSold(msg.sender, _amountOfToken, priceToPayToUser);
+    }
+
+    function withdrawTokens(uint256 amount) public onlyOwner {
+        require(gldToken.balanceOf(address(this)) >= amount, "Out of balance");
+
+        gldToken.safeTransfer(msg.sender, amount);
+
+        emit TokensWithdrawn(msg.sender, amount);
     }
 }
