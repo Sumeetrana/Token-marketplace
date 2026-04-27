@@ -97,4 +97,10 @@ contract TokenMarketPlace is Ownable {
 
         emit TokensWithdrawn(msg.sender, amount);
     }
+
+    function withdrawEther(uint256 _amount) public onlyOwner {
+        require(address(this).balance >= _amount, "Out of balance");
+        (bool success, ) = payable(msg.sender).call{value: _amount}("");
+        require(success, "Transaction failed");
+    }
 }
