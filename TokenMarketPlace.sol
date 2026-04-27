@@ -15,6 +15,17 @@ contract TokenMarketPlace is Ownable {
 
     IERC20 public gldToken;
 
+    event TokenBought(
+        address indexed user,
+        uint256 amountOfToken,
+        uint256 requiredTokenPrice
+    );
+    event TokenSold(
+        address indexed owner,
+        uint256 amountOfToken,
+        uint256 totalEarned
+    );
+
     constructor(address _gldToken) Ownable(msg.sender) {
         gldToken = IERC20(_gldToken);
     }
@@ -57,5 +68,22 @@ contract TokenMarketPlace is Ownable {
         buyerCount += 1;
 
         emit TokenBought(msg.sender, _amountOfToken, requiredTokenPrice);
+    }
+
+    function sellGLDToken(uint256 _amountOfToken) public {
+        require(
+            gldToken.balanceOf(msg.sender) >= _amountOfToken,
+            "Invalid amount of token"
+        );
+        uint priceToPayToUser = calculateTokenPrice(_amountOfToken);
+        gldToken.safeTransferFrom(msg.sender, address(this), _amountOfToken);
+
+        // Transfering money to the user
+        (bool success, ) = payable(msg.sender).call{value: priceToPayToUser}(
+            ""
+        );
+        require(success, "Transaction failed");
+
+        emit TokenSold(msg.sender, _amountOfToken, priceToPayToUser);
     }
 }
