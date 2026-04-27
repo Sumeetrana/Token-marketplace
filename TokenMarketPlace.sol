@@ -84,6 +84,8 @@ contract TokenMarketPlace is Ownable {
         );
         require(success, "Transaction failed");
 
+        sellerCount += 1;
+
         emit TokenSold(msg.sender, _amountOfToken, priceToPayToUser);
     }
 }
