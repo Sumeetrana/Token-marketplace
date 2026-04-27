@@ -12,4 +12,10 @@ contract TokenMarketPlace is Ownable {
 
     uint256 public sellerCount = 1;
     uint256 public buyerCount = 1;
+
+    IERC20 public gldToken;
+
+    constructor(address _gldToken) Ownable(msg.sender) {
+        gldToken = IERC20(_gldToken);
+    }
 }
