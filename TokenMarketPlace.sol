@@ -12,6 +12,7 @@ contract TokenMarketPlace is Ownable {
 
     uint256 public sellerCount = 1;
     uint256 public buyerCount = 1;
+    uint public prevAdjustedRation;
 
     IERC20 public gldToken;
 
@@ -39,14 +40,16 @@ contract TokenMarketPlace is Ownable {
 
         uint adjustedRatio = (marketDemandRatio + smoothingFactor) / 2;
 
-        uint newTokenPrice = (tokenPrice * adjustedRatio) / 1e18;
+        if (adjustedRatio != prevAdjustedRation) {
+            uint newTokenPrice = (tokenPrice * adjustedRatio) / 1e18;
 
-        uint minimumPrice = 2e16;
+            uint minimumPrice = 2e16;
 
-        if (newTokenPrice < minimumPrice) {
-            tokenPrice = minimumPrice;
-        } else {
-            tokenPrice = newTokenPrice;
+            if(newTokenPrice < minimumPrice) {
+                tokenPrice = minimumPrice;
+            } else {
+                tokenPrice = newTokenPrice;
+            }
         }
     }
 
